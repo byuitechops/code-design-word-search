@@ -10,8 +10,8 @@ You will have to figure out how to iterate through a grid forward, backward, and
 ## Setup
 
 ```
-git clone
-cd 
+git clone https://github.com/byuitechops/code-design-word-search.git
+cd code-design-word-search
 npm i -g live-server
 live-server
 ```
