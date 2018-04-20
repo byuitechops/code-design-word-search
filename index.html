@@ -1,0 +1,83 @@
+<html>
+  <head>
+    <style>
+      * {
+        margin:0;
+        padding:0;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas></canvas>
+    <script>
+      var [load,solve] = (function(){
+        const canvas = document.querySelector('canvas')
+        const ctx = canvas.getContext('2d')
+        const padding = 50
+  
+        let letterArea
+        let savedPuzzle
+
+        function init(){
+          canvas.width = window.innerWidth
+          canvas.height = window.innerHeight
+        }
+        function load(puzzle){
+          ctx.clearRect(0,0,canvas.width,canvas.height)
+          savedPuzzle = puzzle
+          letterArea = Math.min((canvas.height-padding*2)/puzzle[0].length, (canvas.width-padding*2)/puzzle.length,40)
+          ctx.font = Math.round(letterArea*.6)+"px verdana"
+          ctx.textAlign = "center"
+          for(var r = 0; r < puzzle.length; r++){
+            for(var c = 0; c < puzzle[0].length; c++){
+              ctx.fillText(puzzle[r][c].toUpperCase(),Math.round(letterArea/2+padding+c*letterArea),Math.round(letterArea/2+padding+r*letterArea))
+            }
+          }
+        }
+        function getColor(percent){
+          var hex = Math.min(Math.round(255*percent),255).toString(16).padStart(2,0)
+          return "#"+hex+hex+hex
+        }
+        function length(sy,sx,ey,ex){
+          return Math.max(Math.abs(sy-ey),Math.abs(sx-ex))
+        }
+        function circle(sy,sx,ey,ex){
+          if(!savedPuzzle) throw new Error('Never loaded a puzzle')
+          if([sy,ey].find(n => n < 0 || n >= savedPuzzle.length) || [sx,ex].find(n => n < 0 || n >= savedPuzzle[0].length)) throw new Error('coordinate is out of range')
+          var start = [sy,sx]
+          var end = [ey,ex]
+          ctx.lineWidth = 2
+          var wordLength = length(...start,...end)
+          ctx.strokeStyle = getColor(1-wordLength/6)
+          var angle = Math.atan2(ey - sy,ex - sx);
+          var get = ([x,y]) => [Math.round(letterArea/2+padding+y*letterArea),
+                                Math.round(letterArea*.3+padding+x*letterArea)]
+          var radius = letterArea*.35
+          ctx.beginPath()
+          ctx.arc(...get(start),radius,angle+Math.PI/2,angle-Math.PI/2)
+          ctx.arc(...get(end),radius,angle-Math.PI/2,angle+Math.PI/2)
+          ctx.closePath()
+          ctx.stroke()
+        }
+        function solve(found){
+          found.sort((a,b) => length(...a) - length(...b))
+          found.forEach(f => circle(...f))
+        }
+        init()
+        return [load,solve]
+      })()
+      
+    </script>
+    <script src="puzzle.js"></script>
+    <script>
+      // Make everything capitalized
+      for(var [key,value] of Object.entries(puzzle)){
+        puzzle[key] = value.map(n => n.trim().toUpperCase())
+      }
+      for(var [key,value] of Object.entries(words)){
+        words[key] = value.map(n => n.trim().toUpperCase())
+      }
+    </script>
+    <script src="solution.js"></script>
+  </body>
+</html>
