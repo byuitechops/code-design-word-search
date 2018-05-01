@@ -16,4 +16,4 @@ npm i -g live-server
 live-server
 ```
 
-Put your solution in `solution.js`, puzzles are located in `puzzle.js` both of these files are loaded and ran in `index.html`. Using `live-server` automatically reloads `index.html` every time you save a file in the directory
+Put your solution in `solution.js`, Using `live-server` automatically reloads `index.html` every time you save a file in the directory
